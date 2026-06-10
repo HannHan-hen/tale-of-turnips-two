@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Tale of Turnips Two 🌱 a cozy farming adventure</title>
+<meta name="description" content="Grow turnips, befriend a chicken, charm a shy villager, and quiet the heart of the ruins. A cozy browser farming adventure.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌱</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="game" width="960" height="720"></canvas>
+
+  <div id="hud" class="hidden">
+    <div id="hud-left">
+      <div id="hearts"></div>
+      <div class="hud-chips">
+        <div class="chip" id="gold-chip"><canvas class="chip-ic" data-icon="coin"></canvas><span id="gold-n">0</span></div>
+        <div class="chip"><canvas class="chip-ic" data-icon="sun"></canvas><span>Day <b id="day-n">1</b></span></div>
+        <div class="chip warn" id="threat"></div>
+      </div>
+      <div id="setpieces"></div>
+    </div>
+    <div id="daybar"><i></i></div>
+    <div id="hud-bottom">
+      <div id="hotbar"></div>
+      <div id="swordslot" class="hidden"><canvas class="chip-ic" data-icon="sword"></canvas><span>Space</span></div>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+
+  <div id="dialogue" class="hidden">
+    <b id="dlg-name">???</b>
+    <p id="dlg-text"></p>
+    <div class="dlg-btns">
+      <button id="dlg-extra" class="hidden">Give gift</button>
+      <button id="dlg-next">Okay ▸</button>
+    </div>
+  </div>
+
+  <div id="menu" class="hidden">
+    <div id="menu-card">
+      <header>
+        <h2 id="menu-title">Shop</h2>
+        <button id="menu-close" aria-label="Close">✕</button>
+      </header>
+      <div id="menu-body"></div>
+    </div>
+  </div>
+
+  <div id="ending" class="hidden">
+    <div id="end-card">
+      <h1>The Ruin Heart is still.</h1>
+      <p class="end-sub">Dappleroot Farm is safe — and astonishingly profitable.</p>
+      <div class="end-golds">
+        <div><small>Final gold</small><b id="end-gold">0g</b></div>
+        <div><small>Best ever</small><b id="end-best">0g</b></div>
+      </div>
+      <table id="end-stats"></table>
+      <p id="end-jay" class="end-jay"></p>
+      <div class="end-btns">
+        <button id="end-continue">Keep farming 🌱</button>
+        <button id="end-new" class="ghost">Start a fresh tale</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="title">
+    <div id="title-card">
+      <p class="title-pre">a cozy farming adventure</p>
+      <h1>Tale of Turnips <span>Two</span></h1>
+      <p class="title-press">press any key to begin</p>
+      <div class="title-keys">
+        <span><b>WASD / ⬅⬆⬇➡</b> move</span>
+        <span><b>E</b> interact</span>
+        <span><b>Space</b> swing sword</span>
+        <span><b>1 2 3</b> choose seeds</span>
+      </div>
+      <p class="title-goal">Grow crops · arm yourself · charm a villager · quiet the heart of the ruins</p>
+      <button id="title-reset" class="ghost hidden">forget my old save & start over</button>
+    </div>
+  </div>
+
+  <div id="touch" class="hidden">
+    <div id="dpad">
+      <button data-dir="up">▲</button>
+      <button data-dir="left">◀</button>
+      <button data-dir="right">▶</button>
+      <button data-dir="down">▼</button>
+    </div>
+    <div id="touch-actions">
+      <button id="t-attack">⚔</button>
+      <button id="t-interact">E</button>
+    </div>
+  </div>
+</div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
