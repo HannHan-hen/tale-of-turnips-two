@@ -286,10 +286,18 @@ export class Game {
     p.swingCd = Math.max(0, p.swingCd - dt);
     p.iframes = Math.max(0, p.iframes - dt);
 
-    // exits / doors
+    // exits: walking up against the map edge inside an exit's span leads out
     if (this.fade.dir === 0) {
+      const w = map.walk, m = r + 16;
       for (const ex of map.exits || []) {
-        if (p.x > ex.x && p.x < ex.x + ex.w && p.y > ex.y && p.y < ex.y + ex.h) {
+        const spanX = p.x > ex.x - 24 && p.x < ex.x + ex.w + 24;
+        const spanY = p.y > ex.y - 24 && p.y < ex.y + ex.h + 24;
+        let hit = false;
+        if (ex.x + ex.w >= VIEW_W - 40) hit = spanY && p.x >= w.x + w.w - m;
+        else if (ex.x <= 40) hit = spanY && p.x <= w.x + m;
+        else if (ex.y <= 40) hit = spanX && p.y <= w.y + m;
+        else if (ex.y + ex.h >= VIEW_H - 40) hit = spanX && p.y >= w.y + w.h - m;
+        if (hit) {
           this.startFade(() => this.enter(ex.to, ex.spawn));
           return;
         }
@@ -644,6 +652,18 @@ export class Game {
           this.sfx.pickup();
         }, 'egg');
       }
+      // signposts hint where each path leads
+      for (const [sx, sy, txt] of [
+        [908, 352, 'Thistledown Village →'],
+        [60, 462, '← Mirrormere Lake'],
+        [610, 660, '↓ Whisperwood (berries!)'],
+        [700, 128, '↑ The Old Ruins. Beware.'],
+      ]) {
+        add(sx, sy, 46, 'Read sign', () => {
+          this.toast(txt, 'door');
+          this.sfx.talk();
+        }, 'door');
+      }
       for (const d of map.doors) {
         add(d.x + d.w / 2, d.y + d.h, 52, d.label, () => {
           if (d.to === 'ruin1' && !s.tut.ruinWarn && !s.equip.sword) {
@@ -658,7 +678,9 @@ export class Game {
       add(480, 180, 70, 'Sleep until morning', () => this.sleepToMorning(), 'sun');
       add(170, 160, 56, 'Starless collection', () => this.ui.openCollection(this), 'star');
       for (const d of map.doors) {
-        add(d.x + d.w / 2, d.y, 60, d.label, () => this.startFade(() => this.enter(d.to, d.spawn)), 'door');
+        // anchor clamped inside the walkable floor so the prompt is reachable
+        const ay = Math.min(d.y, map.walk.y + map.walk.h);
+        add(d.x + d.w / 2, ay, 80, d.label, () => this.startFade(() => this.enter(d.to, d.spawn)), 'door');
       }
     } else if (this.mapId === 'village') {
       add(NPCS.marigold.x, NPCS.marigold.y, 55, 'Talk to Marigold', () => {

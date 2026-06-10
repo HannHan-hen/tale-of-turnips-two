@@ -187,6 +187,43 @@ game.update(1 / 60); // triggers fade.then -> respawn
 ok(s.gold === 90, 'death costs 10% gold');
 ok(game.mapId === 'house', 'wake up at home');
 
+// --- map-edge exits trigger from inside the walkable area
+game.mode = 'play';
+game.fade = { a: 0, dir: 0, then: null };
+game.enter('farm', { x: 480, y: 400 });
+const walkF = MAPS.farm.walk;
+game.player.x = walkF.x + walkF.w - 11; game.player.y = 385; // hugging east wall
+game.updatePlayer(1 / 60, MAPS.farm);
+ok(game.fade.dir > 0, 'east edge exit triggers inside walk bounds');
+game.fade.a = 1; game.update(1 / 60); // fire transition
+ok(game.mapId === 'village', 'arrived in village via edge exit');
+// spawn point must not instantly bounce back through the exit
+game.fade = { a: 0, dir: 0, then: null };
+game.updatePlayer(1 / 60, MAPS.village);
+ok(game.fade.dir === 0, 'village spawn clear of exit trigger');
+// every exit spawn lands clear of all triggers on the destination map
+let safeSpawns = true;
+for (const mid of Object.keys(MAPS)) {
+  for (const ex of MAPS[mid].exits || []) {
+    game.enter(ex.to, ex.spawn);
+    game.fade = { a: 0, dir: 0, then: null };
+    game.updatePlayer(1 / 60, MAPS[ex.to]);
+    if (game.fade.dir !== 0) { safeSpawns = false; console.error('   bounce:', mid, '->', ex.to); }
+  }
+}
+ok(safeSpawns, 'no spawn bounces straight back through an exit');
+
+// --- house door is reachable
+game.fade = { a: 0, dir: 0, then: null };
+game.enter('house', { x: 480, y: 300 });
+const walkH = MAPS.house.walk;
+game.player.x = 480; game.player.y = walkH.y + walkH.h - 11;
+const inter = game.nearestInteract(MAPS.house);
+ok(inter && inter.label === 'Outside', 'house exit door prompt reachable');
+inter.action();
+game.fade.a = 1; game.update(1 / 60);
+ok(game.mapId === 'farm', 'left the house through the door');
+
 // --- render every map once (sanity against draw crashes)
 const c = createCanvas(VIEW_W, VIEW_H);
 const g = c.getContext('2d');

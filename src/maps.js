@@ -128,9 +128,9 @@ MAPS.farm = {
   ],
   walk: { x: 50, y: 90, w: VIEW_W - 100, h: VIEW_H - 150 },
   exits: [
-    { x: VIEW_W - 26, y: 320, w: 26, h: 130, to: 'village', spawn: { x: 70, y: 400 } },
-    { x: 0, y: 430, w: 26, h: 130, to: 'lake', spawn: { x: VIEW_W - 80, y: 400 } },
-    { x: 520, y: VIEW_H - 24, w: 130, h: 24, to: 'forest', spawn: { x: 580, y: 90 } },
+    { x: VIEW_W - 26, y: 320, w: 26, h: 130, to: 'village', spawn: { x: 95, y: 400 } },
+    { x: 0, y: 430, w: 26, h: 130, to: 'lake', spawn: { x: 850, y: 420 } },
+    { x: 520, y: VIEW_H - 24, w: 130, h: 24, to: 'forest', spawn: { x: 580, y: 145 } },
   ],
   doors: [
     { x: 165, y: 270, w: 55, h: 30, to: 'house', spawn: { x: 480, y: 560 }, label: 'Home' },
@@ -205,6 +205,19 @@ MAPS.house = {
       ell(g, 0, 0, r, r); g.fillStyle = col; g.fill();
     }
     g.restore();
+    // doormat marking the way outside
+    rr(g, w / 2 - 52, h - 60, 104, 40, 10);
+    g.fillStyle = '#c8a16b'; g.fill();
+    g.lineWidth = 3; g.strokeStyle = '#8a623c'; g.stroke();
+    rr(g, w / 2 - 42, h - 52, 84, 24, 6);
+    g.lineWidth = 2; g.stroke();
+    g.fillStyle = '#8a623c';
+    g.beginPath();
+    g.moveTo(w / 2 - 8, h - 46); g.lineTo(w / 2 + 8, h - 46);
+    g.lineTo(w / 2 + 8, h - 40); g.lineTo(w / 2 + 14, h - 40);
+    g.lineTo(w / 2, h - 30); g.lineTo(w / 2 - 14, h - 40);
+    g.lineTo(w / 2 - 8, h - 40);
+    g.closePath(); g.fill();
   },
   buildProps() {
     return [
@@ -374,7 +387,7 @@ MAPS.village = {
   ],
   walk: { x: 40, y: 120, w: VIEW_W - 80, h: VIEW_H - 180 },
   exits: [
-    { x: 0, y: 330, w: 26, h: 140, to: 'farm', spawn: { x: VIEW_W - 80, y: 390 } },
+    { x: 0, y: 330, w: 26, h: 140, to: 'farm', spawn: { x: 855, y: 390 } },
   ],
   doors: [],
 };
@@ -450,7 +463,7 @@ MAPS.forest = {
   ],
   walk: { x: 40, y: 80, w: VIEW_W - 80, h: VIEW_H - 140 },
   exits: [
-    { x: 500, y: 0, w: 140, h: 24, to: 'farm', spawn: { x: 580, y: VIEW_H - 90 } },
+    { x: 500, y: 0, w: 140, h: 24, to: 'farm', spawn: { x: 580, y: 600 } },
   ],
   doors: [],
 };
@@ -551,7 +564,7 @@ MAPS.lake = {
   ],
   walk: { x: 30, y: 70, w: VIEW_W - 60, h: VIEW_H - 130 },
   exits: [
-    { x: VIEW_W - 26, y: 330, w: 26, h: 140, to: 'farm', spawn: { x: 75, y: 480 } },
+    { x: VIEW_W - 26, y: 330, w: 26, h: 140, to: 'farm', spawn: { x: 110, y: 480 } },
   ],
   doors: [],
   fishSpot: { x: 360, y: 420 },
