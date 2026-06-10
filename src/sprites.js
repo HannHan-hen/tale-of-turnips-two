@@ -40,19 +40,19 @@ export function farmer(g, x, y, facing, phase, moving, swing = -1, opts = {}) {
   }
 
   // --- torso: overalls over cream shirt
-  // shirt sleeves/arms
+  // shirt sleeves/arms (slim, close to the body)
   const armSwing = moving ? Math.sin(phase * TAU + Math.PI) * 3 : 0;
   for (const dir of [-1, 1]) {
     if (side && dir === -1) continue; // far arm hidden-ish on side view
-    const ax = dir * (side ? 7.5 : 8.6);
+    const ax = dir * (side ? 7 : 7.9);
     g.fillStyle = dir === -1 ? shirtSh : shirt;
     g.save();
-    g.translate(ax, -23);
-    g.rotate(dir * 0.18 + (side ? armSwing * 0.12 : dir * armSwing * 0.05));
-    rr(g, -2.8, 0, 5.6, 11, 2.8);
+    g.translate(ax, -22.5);
+    g.rotate(dir * 0.10 + (side ? armSwing * 0.12 : dir * armSwing * 0.05));
+    rr(g, -2.3, 0, 4.6, 10, 2.3);
     g.fill();
     g.fillStyle = dir === -1 ? skinSh : skin;
-    ell(g, 0, 11, 2.8, 2.8);
+    ell(g, 0, 10, 2.4, 2.4);
     g.fill();
     g.restore();
   }
@@ -124,42 +124,66 @@ export function farmer(g, x, y, facing, phase, moving, swing = -1, opts = {}) {
     g.stroke();
   }
 
-  // front hair: swooping fringe
-  g.fillStyle = P.hairBlonde;
+  // front hair: bright golden swoop with three soft scallops on the brow
+  const HAIR = '#f2bd55', HAIR_DK = '#cf9636', HAIR_HI = '#ffdf94';
+  if (side) {
+    // ponytail flowing behind (drawn before fringe so it sits underneath)
+    g.fillStyle = HAIR_DK;
+    g.beginPath();
+    g.moveTo(-6, hy - 7);
+    g.quadraticCurveTo(-14, hy - 2, -12.5, hy + 9);
+    g.quadraticCurveTo(-11.5, hy + 13, -8.5, hy + 12);
+    g.quadraticCurveTo(-10.5, hy + 5, -4.5, hy - 2.5);
+    g.closePath();
+    g.fill();
+  }
+  g.fillStyle = HAIR;
   g.beginPath();
   if (facing === 'up') {
     ell(g, 0, hy - 0.5, 9.8, 9.4);
   } else {
-    g.moveTo(-9.6, hy + 2.5);
-    g.quadraticCurveTo(-10.5, hy - 8.5, 0, hy - 8.8);
-    g.quadraticCurveTo(10.5, hy - 8.5, 9.6, hy + 2.5);
-    g.quadraticCurveTo(8.5, hy - 1, 4.5, hy - 2.2);
-    g.quadraticCurveTo(5.5, hy + 0.4, 4.2, hy + 1.4);
-    g.quadraticCurveTo(1.5, hy - 2.8, -2.5, hy - 2.0);
-    g.quadraticCurveTo(-7.5, hy - 1.2, -9.6, hy + 2.5);
+    g.moveTo(-9.7, hy + 3.5);
+    g.quadraticCurveTo(-11, hy - 9, 0, hy - 9.4);
+    g.quadraticCurveTo(11, hy - 9, 9.7, hy + 3.5);
+    // brow edge: three gentle scallops, right to left
+    g.quadraticCurveTo(8.6, hy - 1.6, 5.6, hy - 2.4);
+    g.quadraticCurveTo(4.2, hy + 0.6, 2.2, hy + 0.2);
+    g.quadraticCurveTo(0.4, hy - 3.2, -3.4, hy - 2.6);
+    g.quadraticCurveTo(-7.8, hy - 1.8, -9.7, hy + 3.5);
   }
   g.closePath();
   g.fill();
-  // hair sheen
-  g.fillStyle = 'rgba(255,233,170,0.6)';
-  ell(g, -3, hy - 6, 4.6, 2.0);
-  g.fill();
-  // ponytail bun + bow (visible from all but straight-down... keep always)
-  const px2 = facing === 'up' ? 0 : side ? -7.5 : 0;
-  const py2 = facing === 'up' ? hy + 3 : hy - 8.5;
-  g.fillStyle = P.hairBlonde;
-  ell(g, px2, py2, 4.6, 4.2); g.fill();
-  g.fillStyle = P.hairBlondeDark;
-  ell(g, px2 + 1, py2 + 1.2, 3.0, 2.6); g.fill();
-  // bow
-  g.fillStyle = '#8a5a30';
+  // strand lines + sheen
+  g.strokeStyle = 'rgba(190,134,40,0.5)';
+  g.lineWidth = 1; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(-2.5, hy - 8.6); g.quadraticCurveTo(-5.5, hy - 6, -6.8, hy - 1.5); g.stroke();
+  g.beginPath(); g.moveTo(2.5, hy - 8.6); g.quadraticCurveTo(5.5, hy - 6.2, 6.6, hy - 2); g.stroke();
+  g.fillStyle = 'rgba(255,236,178,0.75)';
+  g.save();
+  g.translate(-3.2, hy - 6.4); g.rotate(-0.35);
+  ell(g, 0, 0, 4.2, 1.6); g.fill();
+  g.restore();
+  // high ponytail bun
+  const px2 = facing === 'up' ? 0 : side ? -4.5 : 0;
+  const py2 = facing === 'up' ? hy + 4 : hy - 10.2;
+  g.fillStyle = HAIR;
+  ell(g, px2, py2, 4.8, 4.3); g.fill();
+  g.fillStyle = HAIR_DK;
+  ell(g, px2 + 1.2, py2 + 1.4, 3.0, 2.4); g.fill();
+  g.fillStyle = HAIR_HI;
+  ell(g, px2 - 1.6, py2 - 1.6, 1.8, 1.2); g.fill();
+  // terracotta ribbon bow at the bun
+  g.fillStyle = '#cd6a4a';
   for (const dir of [-1, 1]) {
     g.beginPath();
-    g.moveTo(px2, py2 + 1);
-    g.quadraticCurveTo(px2 + dir * 5.5, py2 - 2.5, px2 + dir * 4.5, py2 + 3.5);
+    g.moveTo(px2, py2 + 1.6);
+    g.quadraticCurveTo(px2 + dir * 6, py2 - 1.5, px2 + dir * 5, py2 + 4.6);
+    g.quadraticCurveTo(px2 + dir * 2, py2 + 3.6, px2, py2 + 1.6);
     g.closePath();
     g.fill();
   }
+  g.fillStyle = '#a84e34';
+  ell(g, px2, py2 + 2.4, 1.6, 1.6); g.fill();
 
   // --- sword swing arc
   if (swing >= 0 && swing <= 1) {
@@ -477,14 +501,15 @@ export function golem(g, x, y, t, tier, flash = 0) {
   shadow(g, 0, 2, 26 * s, 9 * s, 0.3);
   g.scale(s, s);
   g.translate(0, -breathe);
-  const body = flash > 0 ? '#d8cfe0' : null;
+  const body = flash > 0 ? '#e6dff0' : null;
   // legs
-  g.fillStyle = body || '#5c5366';
+  g.fillStyle = body || '#766b84';
   for (const dir of [-1, 1]) {
     rr(g, dir * 11 - 6, -14, 12, 14, 4); g.fill();
+    g.strokeStyle = 'rgba(18,12,28,0.55)'; g.lineWidth = 2; g.stroke();
   }
   // torso boulder
-  g.fillStyle = body || vgrad(g, -44, -8, '#8b7f95', '#5c5366');
+  g.fillStyle = body || vgrad(g, -44, -8, '#b3a7c2', '#766b84');
   g.beginPath();
   g.moveTo(-20, -12);
   g.quadraticCurveTo(-24, -40, -8, -44);
@@ -493,7 +518,10 @@ export function golem(g, x, y, t, tier, flash = 0) {
   g.quadraticCurveTo(0, -6, -20, -12);
   g.closePath();
   g.fill();
-  ink(g, 1.8, 0.35);
+  g.strokeStyle = 'rgba(18,12,28,0.6)'; g.lineWidth = 2.4; g.stroke();
+  // top-left moonlight sheen
+  g.fillStyle = 'rgba(238,232,248,0.30)';
+  ell(g, -8, -38, 9, 4.5); g.fill();
   // cracks
   g.strokeStyle = 'rgba(40,32,50,0.5)'; g.lineWidth = 1.6; g.lineCap = 'round';
   g.beginPath(); g.moveTo(-10, -40); g.lineTo(-6, -32); g.lineTo(-11, -26); g.stroke();
@@ -504,16 +532,18 @@ export function golem(g, x, y, t, tier, flash = 0) {
     g.save();
     g.translate(dir * 20, -36);
     g.rotate(dir * (0.15 + swing2));
-    g.fillStyle = body || vgrad(g, 0, 22, '#7b7083', '#4a4255');
+    g.fillStyle = body || vgrad(g, 0, 22, '#9a8eab', '#5e5470');
     rr(g, -6.5, 0, 13, 24, 6); g.fill();
-    ink(g, 1.6, 0.3);
+    g.strokeStyle = 'rgba(18,12,28,0.55)'; g.lineWidth = 2; g.stroke();
     g.restore();
   }
   // rune eyes + chest rune
   const eye = tier >= 3 ? '#ffd98a' : P.rune;
-  g.fillStyle = eye;
   for (const dir of [-1, 1]) {
-    ell(g, dir * 6.5, -34, 2.6, 3.2 + Math.sin(t * 4) * 0.4);
+    g.fillStyle = radgrad(g, dir * 6.5, -34, 8, [[0, eye + 'cc'], [1, eye + '00']]);
+    ell(g, dir * 6.5, -34, 8, 8); g.fill();
+    g.fillStyle = eye;
+    ell(g, dir * 6.5, -34, 2.8, 3.4 + Math.sin(t * 4) * 0.4);
     g.fill();
   }
   g.save();

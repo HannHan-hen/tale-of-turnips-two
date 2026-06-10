@@ -29,10 +29,8 @@ export function cottage(g, x, y, s = 1) {
   for (const [ax, ay, bx, by] of [
     [-W / 2 + 8, -H + 6, -W / 2 + 8, -4],
     [W / 2 - 8, -H + 6, W / 2 - 8, -4],
-    [-W / 2 + 8, -H * 0.52, -W * 0.16, -H * 0.52],
-    [W * 0.16, -H * 0.52, W / 2 - 8, -H * 0.52],
-    [-W * 0.30, -H + 4, -W * 0.42, -H * 0.52],
-    [W * 0.30, -H + 4, W * 0.42, -H * 0.52],
+    [-W / 2 + 10, -28, -W * 0.13, -28],
+    [W * 0.13, -28, W / 2 - 10, -28],
   ]) {
     g.beginPath(); g.moveTo(ax, ay); g.lineTo(bx, by); g.stroke();
   }
@@ -55,21 +53,25 @@ export function cottage(g, x, y, s = 1) {
   g.fillStyle = '#e9c46a';
   ell(g, dw * 0.28, -dh * 0.42, 3.4, 3.4); g.fill();
 
-  // side windows with shutters + flower boxes
+  // side windows with shutters + flower boxes (below the eave line)
+  const winTop = -H * 0.60;
   for (const wx of [-W * 0.32, W * 0.32]) {
-    rr(g, wx - 14, -H * 0.78, 28, 30, 6);
-    g.fillStyle = vgrad(g, -H * 0.78, -H * 0.78 + 30, '#fdf3cf', '#e8c97e');
+    rr(g, wx - 15, winTop, 30, 30, 6);
+    g.fillStyle = vgrad(g, winTop, winTop + 30, '#fdf3cf', '#e8c97e');
     g.fill();
     g.lineWidth = 3.5; g.strokeStyle = P.beam; g.stroke();
-    g.beginPath(); g.moveTo(wx, -H * 0.78); g.lineTo(wx, -H * 0.78 + 30);
-    g.moveTo(wx - 14, -H * 0.78 + 15); g.lineTo(wx + 14, -H * 0.78 + 15);
+    g.beginPath(); g.moveTo(wx, winTop); g.lineTo(wx, winTop + 30);
+    g.moveTo(wx - 15, winTop + 15); g.lineTo(wx + 15, winTop + 15);
     g.lineWidth = 2; g.stroke();
+    // warm glow inside
+    g.fillStyle = 'rgba(255,214,120,0.35)';
+    ell(g, wx, winTop + 15, 11, 11); g.fill();
     // flower box
-    rr(g, wx - 17, -H * 0.78 + 31, 34, 9, 3);
+    rr(g, wx - 18, winTop + 31, 36, 9, 3);
     g.fillStyle = P.woodDark; g.fill();
     const rand = rng(Math.abs(wx) | 0);
     for (let i = 0; i < 6; i++) {
-      flower(g, wx - 13 + i * 5.2, -H * 0.78 + 30 - rand() * 3, 2.6,
+      flower(g, wx - 14 + i * 5.6, winTop + 30 - rand() * 3, 2.8,
         pick(rand, ['#e87a90', '#f3e9b8', '#d9598a', '#f0b35e']));
     }
   }

@@ -40,6 +40,8 @@ export class Game {
     this.fishing = null; // {phase:'wait'|'bite', t}
     this.toastQ = [];
     this.particles = [];
+    this.smoke = [];
+    this.smokeT = 0;
     this.shake = 0;
     if (this.state.won) this.state.won = false; // returning champions keep playing
   }
@@ -211,6 +213,7 @@ export class Game {
     this.updateFishing(dt);
     this.updateRaids(dt, map);
     this.updateParticles(dt);
+    this.updateSmoke(dt);
     if (this.shake > 0) this.shake = Math.max(0, this.shake - dt * 30);
 
     // interaction
@@ -583,6 +586,23 @@ export class Game {
       pa.vy += 220 * dt;
     }
     this.particles = this.particles.filter((pa) => pa.t > 0);
+  }
+
+  updateSmoke(dt) {
+    if (this.mapId === 'farm') {
+      this.smokeT -= dt;
+      if (this.smokeT <= 0) {
+        this.smokeT = 0.9 + Math.random() * 0.5;
+        this.smoke.push({ x: 255, y: 88, r: 4 + Math.random() * 2, t: 0, life: 4.5 });
+      }
+    }
+    for (const sm of this.smoke) {
+      sm.t += dt;
+      sm.x += dt * (6 + Math.sin(sm.t * 1.3) * 5);
+      sm.y -= dt * 13;
+      sm.r += dt * 3.2;
+    }
+    this.smoke = this.smoke.filter((sm) => sm.t < sm.life);
   }
 
   // -------------------------------------------------------- interactions --
@@ -988,6 +1008,13 @@ export class Game {
 
     this.R.drawScene(g, this.mapId, s, this.t, entities, underlays);
 
+    // chimney smoke drifts above everything
+    for (const sm of this.smoke) {
+      const a = 0.34 * Math.min(1, sm.t * 2) * (1 - sm.t / sm.life);
+      g.fillStyle = `rgba(244,238,222,${a})`;
+      ell(g, sm.x, sm.y, sm.r, sm.r * 0.85);
+      g.fill();
+    }
     // particles above scene
     for (const pa of this.particles) {
       g.globalAlpha = clamp(pa.t * 2.4, 0, 1);

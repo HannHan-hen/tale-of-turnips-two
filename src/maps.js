@@ -148,12 +148,25 @@ MAPS.house = {
     g.fillStyle = lingrad(g, 0, 0, 0, h, [[0, '#8a623c'], [1, '#6b4a2c']]);
     g.fillRect(0, 0, w, h);
     const rand = rng(3);
+    // per-plank tone variation
+    for (let y = 80, row = 0; y < h; y += 46, row++) {
+      let x = row % 2 ? -60 : 0;
+      while (x < w) {
+        const pw = 140 + rand() * 130;
+        const tone = rand();
+        g.fillStyle = tone < 0.33 ? 'rgba(255,215,160,0.07)' : tone < 0.66 ? 'rgba(60,35,15,0.08)' : 'rgba(0,0,0,0)';
+        g.fillRect(x, y, pw, 46);
+        x += pw;
+      }
+    }
     g.strokeStyle = 'rgba(60,40,22,0.5)';
     g.lineWidth = 3;
-    for (let y = 80; y < h; y += 46) {
+    for (let y = 80, row = 0; y < h; y += 46, row++) {
       g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke();
-      for (let i = 0; i < 5; i++) {
-        const x = ((i + (y % 92 ? 0.5 : 0)) / 5) * w + rand() * 60;
+      let x = row % 2 ? -60 : 0;
+      const r2 = rng(50 + row);
+      while (x < w) {
+        x += 140 + r2() * 130;
         g.beginPath(); g.moveTo(x, y); g.lineTo(x, y + 46); g.stroke();
       }
     }
@@ -188,7 +201,7 @@ MAPS.house = {
     g.save();
     g.translate(w / 2, 420);
     g.scale(1, 0.62);
-    for (const [r, col] of [[180, '#a85f55'], [150, '#e8d5ad'], [115, '#7d8a5a'], [80, '#e8d5ad'], [46, '#a85f55']]) {
+    for (const [r, col] of [[170, '#b08a72'], [142, '#e2d3b0'], [110, '#949970'], [76, '#e2d3b0'], [44, '#b08a72']]) {
       ell(g, 0, 0, r, r); g.fillStyle = col; g.fill();
     }
     g.restore();
@@ -265,23 +278,23 @@ MAPS.village = {
     g.save();
     g.translate(w * 0.5, h * 0.52);
     g.scale(1, 0.7);
-    g.fillStyle = '#b3a282';
-    ell(g, 0, 0, 330, 280); g.fill();
+    g.fillStyle = '#bfa982';
+    ell(g, 0, 0, 310, 265); g.fill();
     g.restore();
     const rand = rng(13);
-    for (let i = 0; i < 240; i++) {
-      const a = rand() * TAU, d = Math.sqrt(rand()) * 315;
+    for (let i = 0; i < 300; i++) {
+      const a = rand() * TAU, d = Math.sqrt(rand()) * 295;
       const x = w * 0.5 + Math.cos(a) * d;
       const y = h * 0.52 + Math.sin(a) * d * 0.68;
-      g.fillStyle = rand() < 0.5 ? 'rgba(160,145,115,0.8)' : 'rgba(196,182,150,0.85)';
-      ell(g, x, y, 7 + rand() * 7, 5 + rand() * 5);
+      g.fillStyle = rand() < 0.5 ? 'rgba(172,150,112,0.75)' : 'rgba(208,189,150,0.8)';
+      ell(g, x, y, 5.5 + rand() * 5.5, 4 + rand() * 4);
       g.fill();
       if (rand() < 0.12) {
-        g.fillStyle = 'rgba(110,120,50,0.5)';
+        g.fillStyle = 'rgba(122,128,56,0.45)';
         ell(g, x + 3, y + 2, 3, 2); g.fill();
       }
     }
-    path(g, [[55, 380], [200, 400], [330, 420]], 28, 21);
+    path(g, [[20, 390], [110, 400], [220, 415]], 28, 21);
     // well at center is a prop; flowers around square
     for (let i = 0; i < 14; i++) {
       flower(g, w * 0.5 + (rand() - 0.5) * 640, h * 0.5 + (rand() - 0.5) * 420, 3, pick(rand, ['#e87a90', '#f3e9b8', '#9b6fb5', '#f0b35e']));
@@ -501,17 +514,17 @@ MAPS.lake = {
     g.strokeStyle = 'rgba(150,160,90,0.5)';
     g.lineWidth = 4;
     g.stroke();
-    path(g, [[905, 390], [700, 420], [520, 430]], 26, 113);
-    // cattails by the shore
+    path(g, [[905, 390], [700, 420], [480, 432]], 26, 113);
+    // cattails hugging the shoreline
     const rand2 = rng(117);
-    for (let i = 0; i < 9; i++) {
-      const t = i / 9 + rand2() * 0.06;
-      const sx = 390 + Math.sin(t * 6) * 20 + rand2() * 30;
-      const sy = 160 + t * 460;
+    for (const [sx0, sy] of [[352, 180], [398, 270], [412, 345], [428, 430], [408, 505], [368, 565], [300, 628]]) {
+      const sx = sx0 + rand2() * 14;
       g.strokeStyle = '#5d662b'; g.lineWidth = 2.2; g.lineCap = 'round';
       g.beginPath(); g.moveTo(sx, sy); g.quadraticCurveTo(sx + 3, sy - 18, sx + 1, sy - 34); g.stroke();
+      g.beginPath(); g.moveTo(sx + 7, sy + 2); g.quadraticCurveTo(sx + 11, sy - 12, sx + 9, sy - 24); g.stroke();
       g.fillStyle = '#7a5230';
       rr(g, sx - 2.4, sy - 36, 5.5, 14, 3); g.fill();
+      tuft(g, sx + 6, sy + 2, 5, 'rgba(110,120,50,0.85)');
     }
   },
   buildProps() {
@@ -577,8 +590,8 @@ function ruinRoom(n, opts) {
       }
       // slab tone variation
       for (let i = 0; i < 40; i++) {
-        g.fillStyle = rand() < 0.5 ? 'rgba(120,108,135,0.18)' : 'rgba(28,22,40,0.18)';
-        rr(g, 60 + rand() * (w - 200), 80 + rand() * (h - 200), 60 + rand() * 110, 50 + rand() * 60, 6);
+        g.fillStyle = rand() < 0.5 ? 'rgba(120,108,135,0.10)' : 'rgba(28,22,40,0.10)';
+        rr(g, 60 + rand() * (w - 200), 80 + rand() * (h - 200), 60 + rand() * 110, 50 + rand() * 60, 14);
         g.fill();
       }
       // cracks & rubble & moss
