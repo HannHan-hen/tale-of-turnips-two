@@ -2,19 +2,17 @@
   "name": "tale-of-turnips-two",
   "version": "1.0.0",
   "description": "A cozy browser farming adventure",
+  "type": "module",
   "scripts": {
+    "test": "node tools/test.mjs",
     "shot": "node tools/shot.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "http://local_proxy@127.0.0.1:42717/git/HannHan-hen/tale-of-turnips-two"
+    "url": "https://github.com/HannHan-hen/tale-of-turnips-two.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
-    "canvas": "^3.2.3",
-    "playwright": "^1.60.0"
-  },
-  "type": "module"
+    "canvas": "^3.2.3"
+  }
 }
