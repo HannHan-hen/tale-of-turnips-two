@@ -356,3 +356,17 @@ button.ghost {
 #dpad button[data-dir="right"] { left: 132px; bottom: 80px; }
 #t-attack { right: 96px; bottom: 30px; }
 #t-interact { right: 24px; bottom: 92px; background: rgba(122, 90, 30, 0.75); }
+
+/* On tall touch screens (phones held upright) the 4:3 stage only fills the
+   top of the viewport — pin it there and move the controls into the empty
+   band below the game instead of over it. */
+@media (pointer: coarse) and (max-aspect-ratio: 3/4) {
+  body { align-items: flex-start; }
+  #stage { margin-top: env(safe-area-inset-top, 0px); }
+  #touch {
+    top: 100%;
+    bottom: auto;
+    height: calc(100vh - 100vw * 3 / 4 - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    height: calc(100svh - 100vw * 3 / 4 - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  }
+}
