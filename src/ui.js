@@ -22,7 +22,7 @@ export function iconEl(kind, size = 22) {
     paintIcon(g, kind, size / 2, size / 2, size * 0.42);
     iconCache.set(key, c);
   }
-  return iconCache.get(key).cloneNode(true).getContext ? cloneCanvas(iconCache.get(key)) : iconCache.get(key);
+  return cloneCanvas(iconCache.get(key));
 }
 
 function cloneCanvas(src) {

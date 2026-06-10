@@ -59,3 +59,16 @@ node tools/test.mjs    # headless gameplay smoke tests
 node tools/shot.mjs    # render screenshots of every scene to shots/
 npx serve .            # or any static server, then open localhost
 ```
+
+### Deploying
+
+GitHub Pages serves the `gh-pages` branch. To release whatever is on
+`main`:
+
+```bash
+git push origin main:gh-pages
+```
+
+(Note: this push must be made with user credentials — pushes made by a
+workflow's `GITHUB_TOKEN` produce Pages builds that fail OIDC auth, so
+there is deliberately no deploy workflow.)
