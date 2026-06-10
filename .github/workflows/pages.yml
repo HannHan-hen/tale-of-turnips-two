@@ -1,3 +1,6 @@
+# GitHub Pages serves the gh-pages branch; this workflow keeps it in sync
+# with main. The extra pages/id-token permissions are inherited by the
+# pages-build-deployment run that GitHub spawns after the push.
 name: Deploy to GitHub Pages
 
 on:
@@ -6,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -17,14 +20,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Push main to gh-pages
+        run: git push origin HEAD:gh-pages --force
