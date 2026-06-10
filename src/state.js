@@ -19,10 +19,12 @@ export const ITEMS = {
 };
 
 export const GEAR = {
-  sword: { name: 'Bramble Sword', price: 35, desc: 'Lets you fight. Sharp-ish.' },
-  cap: { name: 'Leather Cap', price: 25, desc: '+1 heart' },
-  vest: { name: 'Leather Vest', price: 45, desc: '+1 heart' },
-  boots: { name: 'Sturdy Boots', price: 65, desc: '+1 heart' },
+  sword: { name: 'Bramble Sword', price: 135, desc: 'Lets you fight. Sharp-ish.' },
+  cap: { name: 'Leather Cap', price: 125, desc: '+1 heart' },
+  vest: { name: 'Leather Vest', price: 145, desc: '+1 heart' },
+  boots: { name: 'Sturdy Boots', price: 165, desc: '+1 heart' },
+  gloves: { name: 'Leather Gloves', price: 185, desc: '+1 heart' },
+  greaves: { name: 'Sturdy Greaves', price: 205, desc: '+1 heart' },
 };
 
 export const SET_PIECES = {
@@ -52,7 +54,7 @@ export function newGame() {
     inv: {},
     seeds: { turnip: 12, radish: 0, carrot: 0 },
     selSeed: 'turnip',
-    equip: { sword: false, cap: false, vest: false, boots: false },
+    equip: { sword: false, cap: false, vest: false, boots: false, gloves: false, greaves: false },
     set: { blade: false, crown: false, sboots: false, gloves: false, pendant: false },
     plots: Array.from({ length: 9 }, () => ({ kind: null, daysGrown: 0 })),
     chicken: { pettedDay: 0, egg: false },
@@ -72,7 +74,9 @@ export function newGame() {
 }
 
 export function maxHearts(s) {
-  return 1 + (s.equip.cap ? 1 : 0) + (s.equip.vest ? 1 : 0) + (s.equip.boots ? 1 : 0) + (s.set.crown ? 1 : 0);
+  const armor = ['cap', 'vest', 'boots', 'gloves', 'greaves']
+    .filter((id) => s.equip[id]).length;
+  return 1 + armor + (s.set.crown ? 1 : 0); // full armor = 6 hearts
 }
 
 export function swordDamage(s) {

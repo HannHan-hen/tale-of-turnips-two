@@ -14,7 +14,7 @@ global.localStorage = {
 global.window = { addEventListener() {} };
 
 const { Game } = await import('../src/game.js');
-const { SEEDS, maxHearts } = await import('../src/state.js');
+const { SEEDS, maxHearts, newGame, GEAR } = await import('../src/state.js');
 
 const sfxStub = new Proxy({}, { get: () => () => {} });
 const uiStub = {
@@ -124,6 +124,14 @@ ok(s.gold > goldBefore || Object.values(s.inv).some((v) => v > 0), 'pickup colle
 game.enter('ruin2', { x: 480, y: 620 });
 const boss = game.enemies.find((e) => e.kind === 'golem');
 ok(!!boss, 'boss room 1 has a Warden golem');
+ok(boss.maxHp === 8, 'Warden has 8 hp');
+
+// --- armor balance: six pieces of gear, five hearts of armor
+const sFresh = newGame();
+ok(Object.keys(GEAR).length === 6, 'smithy sells six pieces');
+ok(Object.values(GEAR).every((g2) => g2.price >= 125), 'gear is not day-two affordable');
+for (const k of Object.keys(sFresh.equip)) sFresh.equip[k] = true;
+ok(maxHearts(sFresh) === 6, 'full armor set grants 6 hearts');
 s.threat = 2;
 while (!boss.dead) {
   game.player.x = boss.x; game.player.y = boss.y + 40;

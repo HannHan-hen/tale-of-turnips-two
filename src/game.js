@@ -72,7 +72,8 @@ export class Game {
     if (map.final) {
       this.enemies.push(this.mkEnemy('heart', VIEW_W / 2, 270, 40));
     } else if (map.boss) {
-      this.enemies.push(this.mkEnemy('golem', VIEW_W / 2, 280, 10 + map.boss * 7, map.boss));
+      const bossHp = [0, 8, 18, 26][map.boss]; // Warden, Colossus, Sentinel
+      this.enemies.push(this.mkEnemy('golem', VIEW_W / 2, 280, bossHp, map.boss));
     } else {
       const rand = rng(depth * 31 + s.day * 7);
       const n = 2 + Math.ceil(depth / 2);
