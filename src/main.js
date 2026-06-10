@@ -34,18 +34,19 @@ for (const c of document.querySelectorAll('canvas.chip-ic')) {
   paintIcon(g, c.dataset.icon, 9, 9, 8);
 }
 
-// title screen: reset link if a save exists
-if (load()) {
-  const reset = document.getElementById('title-reset');
-  reset.classList.remove('hidden');
-  reset.addEventListener('click', (e) => {
-    e.stopPropagation();
-    clearSave();
-    location.reload();
-  });
-}
+// title screen: reset link if a save exists. Handled on pointerdown with
+// stopPropagation — a plain click handler never fires because the title's
+// own pointerdown starts the game and hides the overlay before mouseup.
+const reset = document.getElementById('title-reset');
+if (load()) reset.classList.remove('hidden');
+reset.addEventListener('pointerdown', (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+  clearSave();
+  location.reload();
+});
 document.getElementById('title').addEventListener('pointerdown', () => {
-  input.touch.interact = true; // any tap starts
+  input.touch.interact = true; // any tap starts/resumes
 });
 
 // unlock audio on first gesture

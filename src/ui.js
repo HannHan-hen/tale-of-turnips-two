@@ -154,8 +154,16 @@ export class UI {
     this.game = null;
     this.toastTimers = [];
     $('#menu-close').addEventListener('click', () => this.closeMenu());
+    this.escUsed = false;
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'Escape' && this.menuOpen) this.closeMenu();
+      if (e.code !== 'Escape') return;
+      if (!$('#dialogue').classList.contains('hidden')) {
+        this.advanceDialogue();
+        this.escUsed = true;
+      } else if (!$('#menu').classList.contains('hidden')) {
+        this.closeMenu();
+        this.escUsed = true;
+      }
     });
     $('#dlg-next').addEventListener('click', () => this.advanceDialogue());
     window.addEventListener('keydown', (e) => {
@@ -169,6 +177,19 @@ export class UI {
   // ------------------------------------------------------------- title ----
   hideTitle() {
     $('#title').classList.add('hidden');
+  }
+
+  showTitle(paused) {
+    $('#title').classList.remove('hidden');
+    $('.title-press').textContent = paused ? 'paused — press any key to continue' : 'press any key to begin';
+    if (paused) $('#title-reset').classList.remove('hidden');
+  }
+
+  // true once if Esc was already used to close a menu/dialogue this frame
+  consumeEsc() {
+    const used = this.escUsed;
+    this.escUsed = false;
+    return used;
   }
 
   // -------------------------------------------------------------- toast ---

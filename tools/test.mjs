@@ -30,6 +30,8 @@ const uiStub = {
   openCollection() { this.opened = 'collection'; },
   showEnding() { this.opened = 'ending'; },
   hideTitle() {},
+  showTitle(paused) { this.titleShown = paused ? 'paused' : 'fresh'; },
+  consumeEsc: () => false,
 };
 const inputStub = {
   axis: () => ({ x: 0, y: 0 }),
@@ -38,6 +40,7 @@ const inputStub = {
   attack: () => false,
   consumeAny: () => true,
   endFrame() {},
+  clearAll() {},
   touch: {},
 };
 
@@ -223,6 +226,19 @@ ok(inter && inter.label === 'Outside', 'house exit door prompt reachable');
 inter.action();
 game.fade.a = 1; game.update(1 / 60);
 ok(game.mapId === 'farm', 'left the house through the door');
+
+// --- Esc pauses to the title screen, any key resumes
+game.mode = 'play';
+game.fade = { a: 0, dir: 0, then: null };
+game.enter('farm', { x: 480, y: 400 });
+let escQueue = 1;
+const realHit = inputStub.hit;
+inputStub.hit = (code) => (code === 'Escape' && escQueue-- > 0);
+game.update(1 / 60);
+inputStub.hit = realHit;
+ok(game.mode === 'title' && uiStub.titleShown === 'paused', 'Esc pauses to title screen');
+game.update(1 / 60); // consumeAny stub returns true -> resume
+ok(game.mode === 'play', 'any key resumes from pause');
 
 // --- render every map once (sanity against draw crashes)
 const c = createCanvas(VIEW_W, VIEW_H);

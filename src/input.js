@@ -55,6 +55,14 @@ export class Input {
     return any;
   }
 
+  // forget everything pressed so far (e.g. the Esc that opened the pause)
+  clearAll() {
+    this.pressed.clear();
+    this.anyKey = false;
+    this.touch.interact = false;
+    this.touch.attack = false;
+  }
+
   endFrame() {
     this.pressed.clear();
   }

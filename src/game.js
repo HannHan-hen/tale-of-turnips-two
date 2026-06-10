@@ -193,6 +193,14 @@ export class Game {
     if (this.mode !== 'play') { this.input.endFrame(); return; }
     if (this.ui.menuOpen) { this.input.endFrame(); return; } // menus pause the world
 
+    // Esc pauses (unless it was just used to close a menu/dialogue)
+    if (this.input.hit('Escape') && !this.ui.consumeEsc()) {
+      this.mode = 'title';
+      this.ui.showTitle(true);
+      this.input.clearAll();
+      return;
+    }
+
     const s = this.state;
     const map = MAPS[this.mapId];
 
